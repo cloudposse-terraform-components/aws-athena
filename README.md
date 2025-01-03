@@ -118,10 +118,10 @@ components:
             description: "example query against CloudTrail logs"
             query: |
               SELECT
-               useridentity.arn,
-               eventname,
-               sourceipaddress,
-               eventtime
+              useridentity.arn,
+              eventname,
+              sourceipaddress,
+              eventtime
               FROM %s.platform_dev_cloudtrail_logs
               LIMIT 100;
 ```
