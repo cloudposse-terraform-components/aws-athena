@@ -8,10 +8,10 @@ locals {
 
   # s3://cloudtrail_bucket_name/AWSLogs/organization_id/Account_ID/CloudTrail/
   organization_id         = module.account_map.outputs.org.id
-  filtered_full_account_map = var.account_map_filter_regex == "" ? module.account_map.outputs.full_account_map : { 
+  filtered_full_account_map = var.account_map_exclusion_regex == "" ? module.account_map.outputs.full_account_map : { 
     for k, v in module.account_map.outputs.full_account_map : 
     k => v 
-    if length(regexall(var.account_map_filter_regex, k)) == 0 
+    if length(regexall(var.account_map_exclusion_regex, k)) == 0 
   }
 
 

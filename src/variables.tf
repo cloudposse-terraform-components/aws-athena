@@ -110,7 +110,7 @@ variable "cloudtrail_bucket_component_name" {
   default     = "cloudtrail-bucket"
 }
 
-variable "account_map_filter_regex" {
+variable "account_map_exclusion_regex" {
   type        = string
   description = "Regex to exclude keys from full_account_map. Keys matching this regex will be filtered OUT."
   default     = "" # filtering is disabled by default
