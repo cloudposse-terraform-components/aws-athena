@@ -153,6 +153,7 @@ the `audit` account must have access to the KMS key used to encrypt CloudTrails 
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_account_map_component_name"></a> [account\_map\_component\_name](#input\_account\_map\_component\_name) | The name of the account-map component | `string` | `"account-map"` | no |
 | <a name="input_additional_tag_map"></a> [additional\_tag\_map](#input\_additional\_tag\_map) | Additional key-value pairs to add to each map in `tags_as_list_of_maps`. Not added to `tags` or `id`.<br/>This is for some rare cases where resources want additional configuration of tags<br/>and therefore take a list of maps with tag key, value, and additional configuration. | `map(string)` | `{}` | no |
 | <a name="input_athena_kms_key"></a> [athena\_kms\_key](#input\_athena\_kms\_key) | Use an existing KMS key for Athena if `create_kms_key` is `false`. | `string` | `null` | no |
 | <a name="input_athena_kms_key_deletion_window"></a> [athena\_kms\_key\_deletion\_window](#input\_athena\_kms\_key\_deletion\_window) | KMS key deletion window (in days). | `number` | `7` | no |
