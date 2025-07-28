@@ -109,3 +109,9 @@ variable "cloudtrail_bucket_component_name" {
   description = "The name of the CloudTrail bucket component"
   default     = "cloudtrail-bucket"
 }
+
+variable "account_map_component_name" {
+  type        = string
+  description = "The name of the account-map component"
+  default     = "account-map"
+}
