@@ -7,7 +7,14 @@ locals {
   cloudtrail_table_name = "%s_cloudtrail_logs"
 
   # s3://cloudtrail_bucket_name/AWSLogs/organization_id/Account_ID/CloudTrail/
-  organization_id         = module.account_map.outputs.org.id
+  organization_id = module.account_map.outputs.org.id
+  filtered_full_account_map = var.account_map_exclusion_regex == "" ? module.account_map.outputs.full_account_map : {
+    for k, v in module.account_map.outputs.full_account_map :
+    k => v
+    if length(regexall(var.account_map_exclusion_regex, k)) == 0
+  }
+
+
   cloudtrail_s3_bucket_id = module.cloudtrail_bucket[0].outputs.cloudtrail_bucket_id
   cloudtrail_s3_location  = "s3://${local.cloudtrail_s3_bucket_id}/AWSLogs/${local.organization_id}/%s/CloudTrail/"
 
@@ -93,7 +100,7 @@ EOT
 
 
 resource "aws_athena_named_query" "cloudtrail_query_create_tables" {
-  for_each = local.cloudtrail_enabled ? module.account_map.outputs.full_account_map : {}
+  for_each = local.cloudtrail_enabled ? local.filtered_full_account_map : {}
 
   name      = "cloudtrail_query_create_table_${each.key}"
   workgroup = module.athena.workgroup_id
@@ -102,7 +109,7 @@ resource "aws_athena_named_query" "cloudtrail_query_create_tables" {
 }
 
 resource "aws_athena_named_query" "cloudtrail_query_alter_tables" {
-  for_each = local.cloudtrail_enabled ? module.account_map.outputs.full_account_map : {}
+  for_each = local.cloudtrail_enabled ? local.filtered_full_account_map : {}
 
   name      = "cloudtrail_query_alter_table_${each.key}"
   workgroup = module.athena.workgroup_id
