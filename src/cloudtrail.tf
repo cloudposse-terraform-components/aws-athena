@@ -7,8 +7,8 @@ locals {
   cloudtrail_table_name = "%s_cloudtrail_logs"
 
   # s3://cloudtrail_bucket_name/AWSLogs/organization_id/Account_ID/CloudTrail/
-  organization_id         = module.account_map.outputs.org.id
-  cloudtrail_s3_bucket_id = module.cloudtrail_bucket[0].outputs.cloudtrail_bucket_id
+  organization_id         = local.cloudtrail_enabled ? module.account_map.outputs.org.id : ""
+  cloudtrail_s3_bucket_id = local.cloudtrail_enabled ? module.cloudtrail_bucket[0].outputs.cloudtrail_bucket_id : ""
   cloudtrail_s3_location  = "s3://${local.cloudtrail_s3_bucket_id}/AWSLogs/${local.organization_id}/%s/CloudTrail/"
 
   cloudtrail_query_create_table = <<EOT
@@ -73,12 +73,12 @@ LOCATION '${local.cloudtrail_s3_location}'
 EOT
 
 
-  account_name  = lookup(module.this.descriptors, "account_name", module.this.stage)
-  account_id    = module.account_map.outputs.full_account_map[local.account_name]
-  timestamp     = timestamp()
-  current_year  = formatdate("YYYY", local.timestamp)
-  current_month = formatdate("MM", local.timestamp)
-  current_day   = formatdate("DD", local.timestamp)
+  account_name        = lookup(module.this.descriptors, "account_name", module.this.stage)
+  account_id          = module.account_map.outputs.full_account_map[local.account_name]
+  partition_timestamp = var.cloudtrail_query_alter_tables_partition_date != null ? "${var.cloudtrail_query_alter_tables_partition_date}T00:00:00Z" : timestamp()
+  current_year        = formatdate("YYYY", local.partition_timestamp)
+  current_month       = formatdate("MM", local.partition_timestamp)
+  current_day         = formatdate("DD", local.partition_timestamp)
 
   cloudtrail_query_alter_table = <<EOT
 ALTER TABLE ${local.cloudtrail_table_name} ADD

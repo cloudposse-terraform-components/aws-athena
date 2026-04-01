@@ -115,3 +115,14 @@ variable "account_map_component_name" {
   description = "The name of the account-map component"
   default     = "account-map"
 }
+
+variable "cloudtrail_query_alter_tables_partition_date" {
+  type        = string
+  description = "Static partition date for CloudTrail ALTER TABLE queries (format: YYYY-MM-DD). If set, prevents continuous drift by locking the template to this date. If null, uses current date."
+  default     = null
+
+  validation {
+    condition     = var.cloudtrail_query_alter_tables_partition_date == null || can(regex("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$", var.cloudtrail_query_alter_tables_partition_date))
+    error_message = "The cloudtrail_query_alter_tables_partition_date must be in YYYY-MM-DD format (e.g., 2024-01-15)."
+  }
+}
